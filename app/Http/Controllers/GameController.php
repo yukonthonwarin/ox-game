@@ -34,14 +34,17 @@ class GameController extends Controller
         $playerMove = $request->input('player_move');
         $board = $this->updateBoard($playerMove);
 
-        $score = Score::where('user_id', Auth::id())->first();
+        // ใช้ getOrCreateScore เพื่อดึงคะแนน
+        $score = $this->getOrCreateScore();
 
         if ($this->checkWinner($board, 'X')) {
             $this->updateScore('player');
             return response()->json(['winner' => 'ผู้เล่น']);
         }
 
+        // ตรวจสอบว่าเกมเสมอ
         if (count(array_filter($board)) === 9) {
+            $this->updateScore('draw'); // เรียกใช้ updateScore เมื่อเสมอ
             return response()->json(['winner' => 'เสมอ']);
         }
 
@@ -49,12 +52,10 @@ class GameController extends Controller
         if ($botMove !== null) {
             $board[$botMove] = 'O';
 
-
             if ($this->checkWinner($board, 'O')) {
                 $this->updateScore('bot');
                 return response()->json(['winner' => 'บอท']);
             }
-
 
             session(['board' => $board]);
             return response()->json(['bot_move' => $botMove]);
@@ -187,21 +188,24 @@ class GameController extends Controller
         $score = $this->getOrCreateScore();
 
         if ($winner === 'player') {
-            $score->points += 1;
-            $score->consecutive_wins += 1;
+            $score->points += 1; // เพิ่มคะแนนเมื่อผู้เล่นชนะ
+            $score->consecutive_wins += 1; // เพิ่มการชนะติดต่อกัน
 
-
+            // เช็คว่า ชนะติดต่อกัน 3 ครั้งหรือไม่
             if ($score->consecutive_wins === 3) {
-                $score->points += 1;
-                $score->consecutive_wins = 0;
+                $score->points += 1; // เพิ่มคะแนนพิเศษ
+                $score->consecutive_wins = 0; // รีเซ็ตการชนะติดต่อกัน
             }
         } elseif ($winner === 'bot') {
-            $score->points -= 1;
-            $score->consecutive_wins = 0;
+            $score->points -= 1; // ลดคะแนนเมื่อแพ้
+            $score->consecutive_wins = 0; // รีเซ็ตการชนะติดต่อกัน
+        } elseif ($winner === 'draw') {
+            $score->consecutive_wins = 0; // รีเซ็ตการชนะติดต่อกันเมื่อเสมอ
         }
 
         $score->save();
     }
+
 
 
     public function resetGame()
