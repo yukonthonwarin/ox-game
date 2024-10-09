@@ -9,7 +9,7 @@ class ScoreboardController extends Controller
 {
     public function index()
     {
-        $scores = Score::all();
+        $scores = Score::orderBy('points', 'desc')->get();
 
         return view('scoreboard.index', compact('scores'));
     }

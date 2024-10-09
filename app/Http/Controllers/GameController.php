@@ -4,15 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Score;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
     public function index()
     {
+        // ตรวจสอบว่าผู้ใช้ล็อกอินอยู่
+        if (Auth::check()) {
+            // ดึงผู้ใช้ที่ล็อกอินอยู่
+            $user = Auth::user();
 
-        $score = $this->getOrCreateScore();
-        $this->resetBoard();
-        return view('game.index', compact('score'));
+            // ดึงหรือสร้างคะแนนของผู้ใช้
+            $score = $this->getOrCreateScore($user->id); // เพิ่ม user_id เป็นพารามิเตอร์
+
+            // รีเซ็ตกระดานเกม
+            $this->resetBoard();
+
+            return view('game.index', compact('score'));
+        }
+
+        // ถ้าผู้ใช้ไม่ล็อกอิน ให้เปลี่ยนเส้นทางไปยังหน้าล็อกอินหรือหน้าอื่น ๆ
+        return redirect()->route('login')->withErrors('กรุณาล็อกอินเพื่อเล่นเกม');
     }
 
 
@@ -20,6 +33,8 @@ class GameController extends Controller
     {
         $playerMove = $request->input('player_move');
         $board = $this->updateBoard($playerMove);
+
+        $score = Score::where('user_id', Auth::id())->first();
 
         if ($this->checkWinner($board, 'X')) {
             $this->updateScore('player');
@@ -143,12 +158,14 @@ class GameController extends Controller
 
     private function getOrCreateScore()
     {
+        // ตรวจสอบว่าผู้ใช้ล็อกอินอยู่
+        $userId = auth()->user() ? auth()->user()->id : null;
 
-        $score = Score::first();
+        // หากผู้ใช้ล็อกอิน ให้ดึงคะแนนของผู้ใช้
+        $score = Score::where('user_id', $userId)->first();
 
+        // ถ้ายังไม่มีคะแนนสำหรับผู้ใช้ ให้สร้างใหม่
         if (!$score) {
-
-            $userId = auth()->user() ? auth()->user()->id : null;
             $playerName = auth()->user() ? auth()->user()->name : 'ผู้เล่น';
 
             $score = Score::create([
@@ -163,6 +180,7 @@ class GameController extends Controller
 
         return $score;
     }
+
 
     private function updateScore($winner)
     {
