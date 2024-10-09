@@ -10,12 +10,41 @@
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .container {
-            margin: 50px auto;
             max-width: 600px;
             text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            color: #007bff;
         }
 
         .logout-btn {
@@ -25,27 +54,28 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .logout-btn:hover {
             background-color: #c82333;
+            transform: translateY(-2px);
         }
 
-        /* Style for the rules button */
         .rules-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            position: relative;
             background-color: #007bff;
             color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .rules-btn:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
         }
 
         /* Modal styles */
@@ -58,9 +88,9 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.7);
             padding-top: 60px;
+            animation: fadeIn 0.5s;
         }
 
         .modal-content {
@@ -70,7 +100,21 @@
             border: 1px solid #888;
             width: 80%;
             max-width: 500px;
-            border-radius: 5px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .close {
@@ -108,7 +152,6 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>กติกาการเล่น</h2>
             <p>
-                <!-- ใส่กติกาการเล่นที่นี่ -->
                 1. ผู้เล่นต้องทำการกดเลือกเริ่มใหม่เพื่อเล่น.<br>
                 2. หากผู้เล่นได้เรียง 3 ช่องในแนวเดียวกัน จะชนะ.<br>
                 3. หากไม่มีช่องให้เลือกและไม่มีผู้ชนะ จะเสมอ.<br>
