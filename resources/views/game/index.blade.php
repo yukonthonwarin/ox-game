@@ -77,6 +77,7 @@
 @section('content')
     <div class="container">
         <h1>เล่นเกม OX</h1>
+        <h3>ชื่อ: {{ $score->player_name }}</h3>
         <h3>คะแนน: {{ $score->points }}</h3>
         <h3>ชนะติดต่อกัน: {{ $score->consecutive_wins }}</h3>
         <div id="game-board" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
