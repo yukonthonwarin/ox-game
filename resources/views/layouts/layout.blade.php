@@ -99,7 +99,7 @@
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
-        <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+        <button class="logout-btn" onclick="confirmLogout()">ออกจากระบบ</button>
     </div>
 
     <!-- Modal for showing rules -->
@@ -114,7 +114,6 @@
                 3. หากไม่มีช่องให้เลือกและไม่มีผู้ชนะ จะเสมอ.<br>
                 4. เมื่อผู้เล่นเอาชนะบอทได้ จะได้รับ 1 คะแนน (ถ้ำแพ้จะเสีย 1 คะแนน).<br>
                 5. ถ้าผู้เล่นเอาชนะบอทได้ 3 ครั้งติดต่อกันจะได้รับคะแนนพิเศษเพิ่มอีก 1 คะแนน และการนับจำนวนครั้งที่ชนะติดต่อกันจะถูกนับใหม่
-
             </p>
         </div>
     </div>
@@ -132,10 +131,12 @@
             }
         }
 
-        function logout() {
-            clearCookies();
-            event.preventDefault();
-            document.getElementById('logout-form').submit();
+        function confirmLogout() {
+            if (confirm("คุณแน่ใจว่าต้องการออกจากระบบ?")) {
+                clearCookies();
+                event.preventDefault();
+                document.getElementById('logout-form').submit();
+            }
         }
 
         // Modal functions
